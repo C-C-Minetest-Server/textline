@@ -283,23 +283,26 @@ function textline:generate_line(s, ypos)
     return texture
 end
 
-minetest.register_craft({
-    output = "textline:lcd 2",
-    recipe = {
-        { "default:steel_ingot",                      "digilines:wire_std_00000000",              "default:steel_ingot" },
-        { "mesecons_lightstone:lightstone_green_off", "mesecons_lightstone:lightstone_green_off", "default:glass" },
-        { "default:glass",                            "default:glass",                            "default:glass" }
-    }
-})
+if minetest.get_modpath("default") and minetest.get_modpath("mesecons_lightstone") then
+    local lightstone = "mesecons_lightstone:lightstone_green_off"
+    minetest.register_craft({
+        output = "textline:lcd 2",
+        recipe = {
+            { "default:steel_ingot", "digilines:wire_std_00000000", "default:steel_ingot" },
+            { lightstone,            lightstone,                    "default:glass" },
+            { "default:glass",       "default:glass",               "default:glass" }
+        }
+    })
 
-minetest.register_craft({
-    output = "textline:background 2",
-    recipe = {
-        { "default:steel_ingot",                      "default:glass",                            "default:steel_ingot" },
-        { "mesecons_lightstone:lightstone_green_off", "mesecons_lightstone:lightstone_green_off", "default:glass" },
-        { "default:glass",                            "default:glass",                            "default:glass" }
-    }
-})
+    minetest.register_craft({
+        output = "textline:background 2",
+        recipe = {
+            { "default:steel_ingot", "default:glass", "default:steel_ingot" },
+            { lightstone,            lightstone,      "default:glass" },
+            { "default:glass",       "default:glass", "default:glass" }
+        }
+    })
+end
 
 minetest.register_craft({
     type = "shapeless",
