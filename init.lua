@@ -39,6 +39,14 @@ local textlines = {
     [5] = { delta = { x = 0, y = 0, z = -0.43 }, yaw = math.pi },
 }
 
+local fix_param2 = function(pos)
+    local node = minetest.get_node(pos)
+    if node.param2 < 2 or node.param2 > 5 then
+        node.param2 = 3
+        minetest.swap_node(pos, node)
+    end
+end
+
 local reset_meta = function(pos)
     minetest.get_meta(pos):set_string("formspec", "field[channel;" .. FS("Channel") .. ";${channel}]")
 end
@@ -86,6 +94,18 @@ local on_digiline_receive = function(pos, node, channel, msg)
     end
 end
 
+local on_receive_fields = function(pos, formname, fields, sender)
+    if fields.channel then
+        local name = sender:get_player_name()
+        if minetest.is_protected(pos, name) then
+            minetest.record_protection_violation(pos, name)
+            return
+        end
+
+        minetest.get_meta(pos):set_string("channel", fields.channel)
+    end
+end
+
 local lcd_box = {
     type = "wallmounted",
     wall_top = { -8 / 16, 7 / 16, -8 / 16, 8 / 16, 8 / 16, 8 / 16 }
@@ -104,12 +124,10 @@ minetest.register_node("textline:lcd", {
     node_box = lcd_box,
     selection_box = lcd_box,
     groups = { choppy = 3, dig_immediate = 2, not_blocking_trains = 1 },
+    is_ground_content = false,
 
     after_place_node = function(pos, placer, itemstack)
-        local param2 = minetest.get_node(pos).param2
-        if param2 == 0 or param2 == 1 then
-            minetest.add_node(pos, { name = "textline:lcd", param2 = 3 })
-        end
+        fix_param2(pos)
         prepare_writing(pos)
     end,
 
@@ -121,11 +139,7 @@ minetest.register_node("textline:lcd", {
         clearscreen(pos)
     end,
 
-    on_receive_fields = function(pos, formname, fields, sender)
-        if (fields.channel) then
-            minetest.get_meta(pos):set_string("channel", fields.channel)
-        end
-    end,
+    on_receive_fields = on_receive_fields,
 
     _digistuff_channelcopier_fieldname = "channel",
 
@@ -151,12 +165,10 @@ minetest.register_node("textline:hud", {
     node_box = lcd_box,
     selection_box = lcd_box,
     groups = { choppy = 3, dig_immediate = 2, not_blocking_trains = 1 },
+    is_ground_content = false,
 
     after_place_node = function(pos, placer, itemstack)
-        local param2 = minetest.get_node(pos).param2
-        if param2 == 0 or param2 == 1 then
-            minetest.add_node(pos, { name = "textline:hud", param2 = 3 })
-        end
+        fix_param2(pos)
         prepare_writing(pos)
     end,
 
@@ -168,11 +180,7 @@ minetest.register_node("textline:hud", {
         clearscreen(pos)
     end,
 
-    on_receive_fields = function(pos, formname, fields, sender)
-        if (fields.channel) then
-            minetest.get_meta(pos):set_string("channel", fields.channel)
-        end
-    end,
+    on_receive_fields = on_receive_fields,
 
     _digistuff_channelcopier_fieldname = "channel",
 
@@ -200,6 +208,7 @@ minetest.register_node("textline:background", {
     node_box = lcd_box,
     selection_box = lcd_box,
     groups = { choppy = 3, dig_immediate = 2, not_blocking_trains = 1 },
+    is_ground_content = false,
 
     light_source = 0,
 })
