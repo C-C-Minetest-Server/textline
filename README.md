@@ -1,9 +1,9 @@
 Textline
 ==========
 
-This is a [Minetest](http://www.minetest.net/) mod that adds a text screen that is three blocks wide and is controlled with [Digilines](https://github.com/minetest-mods/digilines/). It works very similarly to the LCD screen that comes with Digilines, but is meant to be readable from farther away.
+This is a [Minetest](http://www.minetest.net/) mod that adds a text screen that is three blocks wide and is controlled with [Digilines](https://content.minetest.net/packages/Jeija/digilines/). It works very similarly to the LCD screen that comes with Digilines, but is meant to be readable from farther away.
 
-![Screenshot](https://raw.githubusercontent.com/gbl08ma/textline/master/screenshot.png?raw=true)
+![Screenshot](https://raw.githubusercontent.com/C-C-Minetest-Server/textline/fork-master/screenshot.png?raw=true)
 
 ## Features
 
@@ -18,11 +18,11 @@ This is a [Minetest](http://www.minetest.net/) mod that adds a text screen that 
 
 Just install it like any other Minetest mod.
 
-1. [Download](https://github.com/gbl08ma/textline/archive/master.zip)
+1. [Download](https://github.com/C-C-Minetest-Server/textline/archive/fork-master.zip)
 
 1. Extract the ZIP into the Minetest mods folder (usually `mods`);
 
-1. Rename the `textline-master` folder to `textline`;
+1. Rename the `textline-fork-master` folder to `textline`;
 
 1. This mod depends on Digilines, make sure you have it installed;
 
