@@ -7,7 +7,7 @@
 
 textline = {}
 -- load characters map
-local chars_file = io.open(minetest.get_modpath("textline").."/characters", "r")
+local chars_file = io.open(minetest.get_modpath("textline") .. "/characters", "r")
 local charmap = {}
 local max_chars = 27
 if not chars_file then
@@ -30,10 +30,10 @@ local textlines = {
     -- on ground
     --* [1] = {delta = {x = 0, y =-0.4, z = 0}, pitch = math.pi /  2},
     -- sides
-    [2] = {delta = {x =  0.43, y = 0, z = 0}, yaw = math.pi / -2},
-    [3] = {delta = {x = -0.43, y = 0, z = 0}, yaw = math.pi /  2},
-    [4] = {delta = {x = 0, y = 0, z =  0.43}, yaw = 0},
-    [5] = {delta = {x = 0, y = 0, z = -0.43}, yaw = math.pi},
+    [2] = { delta = { x = 0.43, y = 0, z = 0 }, yaw = math.pi / -2 },
+    [3] = { delta = { x = -0.43, y = 0, z = 0 }, yaw = math.pi / 2 },
+    [4] = { delta = { x = 0, y = 0, z = 0.43 }, yaw = 0 },
+    [5] = { delta = { x = 0, y = 0, z = -0.43 }, yaw = math.pi },
 }
 
 local reset_meta = function(pos)
@@ -53,9 +53,11 @@ local prepare_writing = function(pos)
     local lcd_info = textlines[minetest.get_node(pos).param2]
     if lcd_info == nil then return end
     local text = minetest.add_entity(
-        {x = pos.x + lcd_info.delta.x,
-         y = pos.y + lcd_info.delta.y,
-         z = pos.z + lcd_info.delta.z}, "textline:text")
+        {
+            x = pos.x + lcd_info.delta.x,
+            y = pos.y + lcd_info.delta.y,
+            z = pos.z + lcd_info.delta.z
+        }, "textline:text")
     text:set_yaw(lcd_info.yaw or 0)
     return text
 end
@@ -74,7 +76,7 @@ local on_digiline_receive = function(pos, node, channel, msg)
             if lentity ~= nil then
                 local lname = lentity.name
                 if lname ~= nil and lname == "textline:text" then
-                    o:set_properties({textures={textline:generate_texture(textline:create_lines(text))}})
+                    o:set_properties({ textures = { textline:generate_texture(textline:create_lines(text)) } })
                 end
             end
         end
@@ -83,7 +85,7 @@ end
 
 local lcd_box = {
     type = "wallmounted",
-    wall_top = {-8/16, 7/16, -8/16, 8/16, 8/16, 8/16}
+    wall_top = { -8 / 16, 7 / 16, -8 / 16, 8 / 16, 8 / 16, 8 / 16 }
 }
 
 minetest.register_node("textline:lcd", {
@@ -91,21 +93,21 @@ minetest.register_node("textline:lcd", {
     description = "Textline",
     inventory_image = "textline_icon.png",
     wield_image = "textline_icon.png",
-    tiles = {"textline_anyside.png"},
+    tiles = { "textline_anyside.png" },
 
     paramtype = "light",
     sunlight_propagates = true,
     paramtype2 = "wallmounted",
     node_box = lcd_box,
     selection_box = lcd_box,
-    groups = {choppy = 3, dig_immediate = 2, not_blocking_trains = 1},
+    groups = { choppy = 3, dig_immediate = 2, not_blocking_trains = 1 },
 
-    after_place_node = function (pos, placer, itemstack)
+    after_place_node = function(pos, placer, itemstack)
         local param2 = minetest.get_node(pos).param2
         if param2 == 0 or param2 == 1 then
-            minetest.add_node(pos, {name = "textline:lcd", param2 = 3})
+            minetest.add_node(pos, { name = "textline:lcd", param2 = 3 })
         end
-        prepare_writing (pos)
+        prepare_writing(pos)
     end,
 
     on_construct = function(pos)
@@ -145,12 +147,12 @@ minetest.register_node("textline:hud", {
     paramtype2 = "wallmounted",
     node_box = lcd_box,
     selection_box = lcd_box,
-    groups = {choppy = 3, dig_immediate = 2, not_blocking_trains = 1},
+    groups = { choppy = 3, dig_immediate = 2, not_blocking_trains = 1 },
 
-    after_place_node = function (pos, placer, itemstack)
+    after_place_node = function(pos, placer, itemstack)
         local param2 = minetest.get_node(pos).param2
         if param2 == 0 or param2 == 1 then
-            minetest.add_node(pos, {name = "textline:hud", param2 = 3})
+            minetest.add_node(pos, { name = "textline:hud", param2 = 3 })
         end
         prepare_writing(pos)
     end,
@@ -187,14 +189,14 @@ minetest.register_node("textline:background", {
     description = "Textline background",
     inventory_image = "textline_background.png",
     wield_image = "textline_background.png",
-    tiles = {"textline_anyside.png"},
+    tiles = { "textline_anyside.png" },
 
     paramtype = "light",
     sunlight_propagates = true,
     paramtype2 = "wallmounted",
     node_box = lcd_box,
     selection_box = lcd_box,
-    groups = {choppy = 3, dig_immediate = 2, not_blocking_trains = 1},
+    groups = { choppy = 3, dig_immediate = 2, not_blocking_trains = 1 },
 
     light_source = 0,
 })
@@ -202,13 +204,13 @@ minetest.register_node("textline:background", {
 minetest.register_entity("textline:text", {
     collisionbox = { 0, 0, 0, 0, 0, 0 },
     visual = "upright_sprite",
-    visual_size = {x=3, y=1},
+    visual_size = { x = 3, y = 1 },
     textures = {},
 
     on_activate = function(self)
         local meta = minetest.get_meta(self.object:get_pos())
         local text = meta:get_string("text")
-        self.object:set_properties({textures={textline:generate_texture(textline:create_lines(text))}})
+        self.object:set_properties({ textures = { textline:generate_texture(textline:create_lines(text)) } })
     end
 })
 
@@ -229,7 +231,7 @@ function textline:create_lines(text)
     local tab = {}
     for line in string.gmatch(text, '([^|\n]+)') do
         table.insert(tab, line)
-        line_num = line_num+1
+        line_num = line_num + 1
         if line_num > NUMBER_OF_LINES then
             return tab
         end
@@ -238,10 +240,10 @@ function textline:create_lines(text)
 end
 
 function textline:generate_texture(lines)
-    local texture = "[combine:"..LCD_WIDTH .."x"..LCD_HEIGHT
+    local texture = "[combine:" .. LCD_WIDTH .. "x" .. LCD_HEIGHT
     local ypos = -2
     for i = 1, #lines do
-        texture = texture..self:generate_line(lines[i], ypos)
+        texture = texture .. self:generate_line(lines[i], ypos)
         ypos = ypos + LINE_HEIGHT + LINE_SPACING
     end
     return texture
@@ -261,7 +263,7 @@ function textline:generate_line(s, ypos)
             file = charmap[s:sub(i, i + 1)]
             i = i + 2
         else
-            print("[textline] W: unknown symbol in '"..s.."' at "..i)
+            print("[textline] W: unknown symbol in '" .. s .. "' at " .. i)
             i = i + 1
         end
         if file ~= nil then
@@ -275,7 +277,7 @@ function textline:generate_line(s, ypos)
     local texture = ""
     local xpos = LCD_PADDING
     for i = 1, #parsed do
-        texture = texture..":"..xpos..","..ypos.."="..parsed[i]..".png"
+        texture = texture .. ":" .. xpos .. "," .. ypos .. "=" .. parsed[i] .. ".png"
         xpos = xpos + CHAR_WIDTH + 1
     end
     return texture
@@ -284,29 +286,29 @@ end
 minetest.register_craft({
     output = "textline:lcd 2",
     recipe = {
-        {"default:steel_ingot", "digilines:wire_std_00000000", "default:steel_ingot"},
-        {"mesecons_lightstone:lightstone_green_off","mesecons_lightstone:lightstone_green_off","default:glass"},
-        {"default:glass","default:glass","default:glass"}
+        { "default:steel_ingot",                      "digilines:wire_std_00000000",              "default:steel_ingot" },
+        { "mesecons_lightstone:lightstone_green_off", "mesecons_lightstone:lightstone_green_off", "default:glass" },
+        { "default:glass",                            "default:glass",                            "default:glass" }
     }
 })
 
 minetest.register_craft({
     output = "textline:background 2",
     recipe = {
-        {"default:steel_ingot", "default:glass", "default:steel_ingot"},
-        {"mesecons_lightstone:lightstone_green_off","mesecons_lightstone:lightstone_green_off","default:glass"},
-        {"default:glass","default:glass","default:glass"}
+        { "default:steel_ingot",                      "default:glass",                            "default:steel_ingot" },
+        { "mesecons_lightstone:lightstone_green_off", "mesecons_lightstone:lightstone_green_off", "default:glass" },
+        { "default:glass",                            "default:glass",                            "default:glass" }
     }
 })
 
 minetest.register_craft({
-	type = "shapeless",
-	output = "textline:lcd",
-	recipe = {"textline:hud"},
+    type = "shapeless",
+    output = "textline:lcd",
+    recipe = { "textline:hud" },
 })
 
 minetest.register_craft({
-	type = "shapeless",
-	output = "textline:hud",
-	recipe = {"textline:lcd"},
+    type = "shapeless",
+    output = "textline:hud",
+    recipe = { "textline:lcd" },
 })
