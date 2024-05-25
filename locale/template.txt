@@ -1,0 +1,7 @@
+# textdomain: textline
+
+##[ init.lua ]##
+Channel=
+Textline=
+Transparent Textline=
+Textline Background=

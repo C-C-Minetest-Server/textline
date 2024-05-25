@@ -5,6 +5,9 @@
 -- See the included license file LICENSE.txt
 -- Font: 04.jp.org
 
+local S = minetest.get_translator("textline")
+local FS = function(...) return minetest.formspec_escape(S(...)) end
+
 textline = {}
 -- load characters map
 local chars_file = io.open(minetest.get_modpath("textline") .. "/characters", "r")
@@ -37,7 +40,7 @@ local textlines = {
 }
 
 local reset_meta = function(pos)
-    minetest.get_meta(pos):set_string("formspec", "field[channel;Channel;${channel}]")
+    minetest.get_meta(pos):set_string("formspec", "field[channel;" .. FS("Channel") .. ";${channel}]")
 end
 
 local clearscreen = function(pos)
@@ -90,7 +93,7 @@ local lcd_box = {
 
 minetest.register_node("textline:lcd", {
     drawtype = "nodebox",
-    description = "Textline",
+    description = S("Textline"),
     inventory_image = "textline_icon.png",
     wield_image = "textline_icon.png",
     tiles = { "textline_anyside.png" },
@@ -139,7 +142,7 @@ minetest.register_node("textline:lcd", {
 
 minetest.register_node("textline:hud", {
     drawtype = "airlike",
-    description = "Transparent Textline",
+    description = S("Transparent Textline"),
     inventory_image = "textline_hud.png",
     wield_image = "textline_hud.png",
     paramtype = "light",
@@ -186,7 +189,7 @@ minetest.register_node("textline:hud", {
 
 minetest.register_node("textline:background", {
     drawtype = "nodebox",
-    description = "Textline background",
+    description = S("Textline Background"),
     inventory_image = "textline_background.png",
     wield_image = "textline_background.png",
     tiles = { "textline_anyside.png" },
