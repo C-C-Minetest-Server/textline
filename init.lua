@@ -76,7 +76,7 @@ end
 local on_digiline_receive = function(pos, node, channel, msg)
     local meta = minetest.get_meta(pos)
     local setchan = meta:get_string("channel")
-    if setchan ~= channel then return end
+    if setchan ~= channel or type(msg) ~= "string" then return end
 
     meta:set_string("text", msg)
     if msg ~= "" then
